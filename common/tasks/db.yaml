@@ -1,0 +1,55 @@
+- name: installing packages
+  dnf:
+    name:
+       - mysql-server
+       - mysql-devel
+       - python39
+       - python39-devel
+       - python39-pip
+       - gcc
+
+- name: Installing pip Modules
+  pip:
+    name: 
+       - PyMySQL
+    state: present
+    executable: pip3
+
+- name: Restarting mysql service
+  systemd:
+    name: mysqld
+    state: restarted
+    enabled: yes
+
+    #- name: Ensure root user can only login from localhost
+    #mysql_user:
+    #login_password: "{{ dbpass }}"
+    #check_implicit_admin: yes
+    #name: root
+    #host: "{{ item }}"
+    #password: "{{ dbpass }}"
+    #state: present
+    #with_items:
+    #- localhost
+    #- 127.0.0.1
+    #- ::1
+
+- name: Add my.cnf to root user
+  template:
+    src: my.cnf.j2
+    dest: /root/.my.cnf
+
+- name: Reload privilege tables
+  command: |
+    mysql -p{{ dbpass }} -ne "{{ item }}"
+  with_items:
+    - FLUSH PRIVILEGES
+  changed_when: False
+
+  #- name: Add deploy DB user
+  #mysql_user: name={{ dbuser }} password={{ dbpass }} priv=*.*:ALL,GRANT state=present
+
+- name: Add .ny.cnf to user home
+  template: 
+    src: my.cnf.j2
+    dest: /home/tom/.my.cnf

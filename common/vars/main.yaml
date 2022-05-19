@@ -1,0 +1,14 @@
+---
+
+    # Ansible playbooks level simple variables
+    config_dest: /etc/httpd/conf.d/example.conf
+    web_dest: /var/www/html
+    doc_root_location: /var/www/html
+    http_port: 80
+    color: red
+    dbpass: sreerag
+    dbuser: tom
+    item:
+      - php
+      - php-cli
+      - php-gd

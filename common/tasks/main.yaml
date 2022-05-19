@@ -1,0 +1,40 @@
+---
+#- hosts: web
+# become: true
+
+  #handlers:
+  # - name: Restart service
+  #   include_tasks: handlers.yaml
+
+
+    - ansible.builtin.import_tasks: apache.yaml
+      vars:
+        state: present
+
+    - ansible.builtin.include_tasks: php.yaml
+      vars:
+        state: present
+
+    - ansible.builtin.include_tasks: db.yaml
+      vars:
+        state: present
+
+    - name: Add the user 'tom' with a specific uid and a primary group of 'admin'
+      ansible.builtin.user:
+        name: tom
+        comment: mysql user
+        uid: 5002
+
+    - name: "configure httpd webserver"
+      ansible.builtin.template:
+        src: templates/example.com.j2
+        dest: "{{ config_dest }}" # referencing simple variable
+        # notify: Restart httpd     # Jinja2 syntax to reference it
+
+    - name: Copy index.php
+      ansible.builtin.template:
+        src: templates/index.php.j2
+        dest: "{{ web_dest }}/index.php" # referencing simple variable
+        mode: 0664
+
+

@@ -1,0 +1,25 @@
+---
+#- name: Installing PHP
+# ansible.builtin.apt:
+#   name: php
+#   state: "{{ state }}"
+#   update_cache: true
+# when: ansible_facts['distribution'] == 'Ubuntu'
+# changed_when: true
+# notify: Restart web server
+
+#- name: Installing PHP
+# ansible.builtin.yum:
+#   name: "{{ item }}"
+#   state: "{{ state}}"
+#   update_cache: true
+# when: ansible_facts['distribution'] == 'CentOS'
+# notify: Restart web server
+
+- name: Installing PHP
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+    # when: ansible_facts['distribution'] == 'RedHat'
+  #  notify: Restart web server
